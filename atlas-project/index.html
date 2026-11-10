@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>An Atlas of Imaginary Worlds</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@300;400;500&family=Jost:wght@300;400&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-state="intro">
+
+<!-- The 3D stage: everything you see behind the text is drawn on this canvas -->
+<canvas id="stage"></canvas>
+<div class="vignette"></div>
+<div id="veil"></div>
+
+<!-- SCREEN 1: Introduction -->
+<main id="intro" class="screen">
+  <div class="intro-inner">
+    <h1 id="title" aria-label="An Atlas of Imaginary Worlds"></h1>
+    <p class="tagline reveal" style="--d:2.7s">Three places that do not exist. Visit them anyway.</p>
+    <p class="desc reveal" style="--d:3.1s">A small exhibition of imagined landscapes, grown from code rather than drawn. Drift through each one, change its weather, and keep the versions you love.</p>
+    <button id="explore" class="link explore reveal" style="--d:3.5s" type="button">Explore</button>
+  </div>
+</main>
+
+<!-- SCREEN 2: The Atlas (three luminous worlds live in the 3D canvas) -->
+<section id="atlas" class="screen">
+  <div class="bar">
+    <div>
+      <p class="atlas-title">The Atlas</p>
+      <p class="hint">Hover over a world to read its field record.<span class="touch-hint"> Tap a world to read, tap again to enter.</span></p>
+    </div>
+    <nav class="hud-links"><button id="b-col-a" class="link small" type="button">Collection</button><button id="toIntro" class="link small" type="button">Back to the introduction</button></nav>
+  </div>
+  <div id="labels"></div>
+  <aside id="record" aria-live="polite">
+    <div class="meta"><span id="rec-id" class="id"></span><span id="rec-status"></span></div>
+    <h2 id="rec-name"></h2>
+    <p id="rec-coords" class="coords"></p>
+    <p id="rec-poem" class="poem"></p>
+    <p id="rec-method" class="method"></p>
+    <button id="enter" class="link small" type="button">Enter this world</button>
+  </aside>
+</section>
+
+<!-- SCREEN 3: Arrival title card, shown briefly over the veil while a world is built -->
+<section id="arrival" class="screen">
+  <div class="arrival-inner">
+    <p id="arr-id" class="id"></p>
+    <h2 id="arr-name"></h2>
+    <p id="arr-coords" class="coords"></p>
+    <p id="arr-poem" class="poem"></p>
+  </div>
+</section>
+
+<!-- SCREEN 4: In-world controls, with the Adjust and Field notes panels -->
+<section id="hud" class="screen">
+  <div class="bar">
+    <div>
+      <p id="hud-name" class="atlas-title"></p>
+      <p id="hud-seed" class="hint"></p>
+    </div>
+    <nav class="hud-links" aria-label="World controls">
+      <button id="b-adjust" class="link small" type="button" aria-expanded="false">Adjust</button>
+      <button id="b-notes" class="link small" type="button" aria-expanded="false">Field notes</button>
+      <button id="keep" class="link small" type="button">Keep this world</button>
+      <button id="b-col-w" class="link small" type="button">Collection</button>
+      <button id="leave" class="link small" type="button">Return to the Atlas</button>
+    </nav>
+  </div>
+  <p class="hint hud-hint">Drag to look around. Scroll or pinch to move closer.</p>
+  <aside id="p-adjust" class="panel" aria-label="Adjust the world">
+    <h3>Adjust the world</h3>
+      <label class="row"><span>Fog density</span><output id="o-fog"></output><input id="s-fog" type="range"></label>
+      <label class="row"><span>Structure scale</span><output id="o-scale"></output><input id="s-scale" type="range"></label>
+      <label class="row"><span>Particle density</span><output id="o-particles"></output><input id="s-particles" type="range"></label>
+      <label class="row"><span>Colour mood</span><output id="o-mood"></output><input id="s-mood" type="range"></label>
+    <div class="panel-actions">
+      <button id="regen" class="link small" type="button">Generate variation</button>
+      <button id="reset" class="link small" type="button">Reset</button>
+    </div>
+  </aside>
+  <aside id="p-notes" class="panel" aria-label="Field notes">
+    <div class="meta"><span id="n-id" class="id"></span><span id="n-status"></span></div>
+    <h3 id="n-name"></h3>
+    <p id="n-coords" class="coords"></p>
+    <p id="n-poem" class="poem"></p>
+    <p class="nlabel">Observations</p>
+    <ol id="n-obs"></ol>
+    <p id="n-method" class="method"></p>
+    <p id="n-kept" class="method"></p>
+  </aside>
+</section>
+
+<!-- SCREEN 5: Collection of kept worlds -->
+<section id="collection" class="screen">
+  <div class="bar">
+    <div>
+      <p class="atlas-title">Collection</p>
+      <p id="col-sub" class="hint"></p>
+    </div>
+    <button id="col-close" class="link small" type="button">Close</button>
+  </div>
+  <p id="col-note" class="hint" hidden>Your browser is blocking storage, so kept worlds last only until you close this page.</p>
+  <p id="col-empty" class="poem" hidden>Nothing kept yet. Enter a world and choose Keep this world.</p>
+  <div id="grid"></div>
+</section>
+
+<div id="flash"></div>
+<p id="toast" role="status" aria-live="polite"></p>
+
+<p id="nogl">This exhibition needs WebGL, which your browser or device has switched off. Try another browser or enable hardware acceleration.</p>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="js/worlds.js"></script>
+<script src="js/worlds3d.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

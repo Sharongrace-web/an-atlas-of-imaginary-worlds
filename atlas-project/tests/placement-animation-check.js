@@ -1,0 +1,10 @@
+const THREE=require('three'); global.window=global; global.THREE=THREE; const fs=require('fs');
+const load=(f)=>{ delete global.WORLD3D; (0,eval)(fs.readFileSync(f,'utf8')); return global.WORLD3D; };
+const NEW=load(process.argv[2]); const env=(Q)=>({timeU:{value:0},spriteTex:new THREE.Texture(),px:{value:1},Q}); const ray=new THREE.Raycaster(), down=new THREE.Vector3(0,-1,0), v=new THREE.Vector3();
+const form=(w)=>w.group.children.filter(g=>g.isGroup&&g.children.some(c=>c.isMesh&&c.geometry.attributes.position.count>800));
+function pairs(w){ w.group.updateMatrixWorld(true); const M=form(w).map(g=>g.children.find(c=>c.isMesh&&c.geometry.attributes.position.count>800)); M.forEach(m=>{ m.geometry.computeBoundingBox(); m.userData.box=new THREE.Box3().copy(m.geometry.boundingBox).applyMatrix4(m.matrixWorld); }); const out=[];
+  for(let a=0;a<M.length;a++) for(let b=a+1;b<M.length;b++){ if(!M[a].userData.box.intersectsBox(M[b].userData.box)) continue; let hit=false; for(const [A,B] of [[M[a],M[b]],[M[b],M[a]]]){ if(hit) break; const P=A.geometry.attributes.position, bb=B.userData.box;
+      for(let i=0;i<P.count;i+=17){ v.fromBufferAttribute(P,i).applyMatrix4(A.matrixWorld); if(v.x<bb.min.x||v.x>bb.max.x||v.z<bb.min.z||v.z>bb.max.z||v.y<bb.min.y||v.y>bb.max.y) continue; ray.set(new THREE.Vector3(v.x,bb.max.y+5,v.z),down); const h=ray.intersectObject(B,false); if(h.length>=2){ const ys=h.map(x=>x.point.y); if(v.y>Math.min(...ys)&&v.y<Math.max(...ys)){hit=true;break;} } } } if(hit) out.push(a+'-'+b); } return out; }
+const per=+process.argv[3]||4, sel=[[],[],[],[],[]]; for(let s=2;s<4000;s++){ const a=NEW.archetype(2,s); if(sel[a].length<per&&s!==3041&&s!==278376) sel[a].push(s); } sel[0].unshift(3041); sel[1].unshift(278376);
+for(let a=0;a<5;a++) for(const s of sel[a]){ const w=NEW.build(2,s,env(1)); const p0=pairs(w); for(let k=0;k<60;k++) w.update(k,1); const p60=pairs(w); for(let k=60;k<180;k++) w.update(k,1); const p180=pairs(w); if(p0.length||p60.length||p180.length) console.log(NEW.ARCH_NAMES[2][a],'seed',s,'| t=0:',p0.join(',')||'-','| 60s:',p60.join(',')||'-','| 180s:',p180.join(',')||'-'); }
+console.log('done');
